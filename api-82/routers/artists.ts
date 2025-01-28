@@ -30,6 +30,32 @@ artistsRouter.post('/', imagesUpload.single('image'), auth, permit('admin', 'use
     }
 })
 
+artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    let reqWithAuth = req as RequestWithUser;
+
+    try{
+        if(!reqWithAuth.params.id){
+            res.status(400).send({error: 'The ID should be in the URl'});
+        }
+
+        const artist = await Artist.findById(reqWithAuth.params.id);
+
+        if(!artist){
+            res.status(400).send({error: 'Artist not found'});
+        }
+
+        if(artist){
+            const updateArtist = await Artist.findByIdAndUpdate(reqWithAuth.params.id,
+                {isPublished: !artist.isPublished},
+                {new: true},
+            )
+            res.send(updateArtist);
+        }
+    }catch (e){
+        next(e);
+    }
+})
+
 artistsRouter.get('/', async (req, res, next) => {
     try{
         const artists = await Artist.find()
@@ -64,7 +90,7 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
         }
 
         if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(artist.username) || artist.inPublished) {
+            if (String(user.user._id) !== String(artist.username) || artist.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this artist' });
                 return;
             }

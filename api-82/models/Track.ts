@@ -18,7 +18,7 @@ const TrackSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    inPublished: {
+    isPublished: {
         type: Boolean,
         default: false,
         required: true,

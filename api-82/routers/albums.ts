@@ -34,6 +34,32 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
     }
 });
 
+albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    let reqWithAuth = req as RequestWithUser;
+
+    try{
+        if(!reqWithAuth.params.id){
+            res.status(400).send({error: 'The ID should be in the URl'});
+        }
+
+        const album = await Album.findById(reqWithAuth.params.id);
+
+        if(!album){
+            res.status(400).send({error: 'Album not found'});
+        }
+
+        if(album){
+            const updateAlbum = await Album.findByIdAndUpdate(reqWithAuth.params.id,
+                {isPublished: !album.isPublished},
+                {new: true},
+            )
+            res.send(updateAlbum);
+        }
+    }catch (e){
+        next(e);
+    }
+})
+
 
 albumsRouter.get("/", async (req, res, next) => {
     try{
@@ -81,7 +107,7 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
         }
 
         if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(album.username) || album.inPublished) {
+            if (String(user.user._id) !== String(album.username) || album.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this album' });
                 return;
             }

@@ -18,7 +18,7 @@ const AlbumSchema = new mongoose.Schema({
         type: String,
         default: null
     },
-    inPublished: {
+    isPublished: {
         type: Boolean,
         default: false,
         required: true,

@@ -35,6 +35,32 @@ tracksRouter.post('/', auth, permit('admin', 'user'), async (req, res, next) => 
     }
 });
 
+tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    let reqWithAuth = req as RequestWithUser;
+
+    try{
+        if(!reqWithAuth.params.id){
+            res.status(400).send({error: 'The ID should be in the URl'});
+        }
+
+        const track = await Track.findById(reqWithAuth.params.id);
+
+        if(!track){
+            res.status(400).send({error: 'Track not found'});
+        }
+
+        if(track){
+            const updateTrack = await Track.findByIdAndUpdate(reqWithAuth.params.id,
+                {isPublished: !track.isPublished},
+                {new: true},
+            )
+            res.send(updateTrack);
+        }
+    }catch (e){
+        next(e);
+    }
+})
+
 tracksRouter.get('/', async (req, res, next) => {
     try {
         const albumById = req.query.album;
@@ -63,7 +89,7 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
         }
 
         if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(track.username) || track.inPublished) {
+            if (String(user.user._id) !== String(track.username) || track.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this track' });
                 return;
             }
