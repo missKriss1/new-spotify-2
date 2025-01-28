@@ -2,7 +2,7 @@ import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
-import auth from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 
 const artistsRouter = express.Router();
@@ -52,6 +52,30 @@ artistsRouter.get('/:id', async (req, res, next) => {
     }
 })
 
+artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+    const user = req as RequestWithUser;
+    try{
 
+        const artist = await Artist.findById(req.params.id);
+
+        if (!artist) {
+            res.status(404).send({error: 'Artist not found'});
+            return;
+        }
+
+        if(user.user.role !== 'admin'){
+            if (String(user.user._id) !== String(artist.username) || artist.inPublished) {
+                res.status(401).send({ error: 'You cannot delete this artist' });
+                return;
+            }
+        }
+
+        await Artist.findByIdAndDelete(req.params.id);
+
+        res.send({message: 'Artist deleted successfully'});
+    }catch (e){
+        next(e)
+    }
+});
 
 export default artistsRouter

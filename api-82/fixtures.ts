@@ -39,11 +39,13 @@ const run = async () => {
     const [John, Jane] = await Artist.create(
         {
             name: 'John',
+            username: user1._id,
             information: 'hello',
             image:"fixtures/artist_1.jpg"
         },
         {
             name: 'Jane',
+            username: user2._id,
             information: 'hello Jane',
             image:"fixtures/artist.2.jpg"
         })

@@ -4,7 +4,8 @@ import {imagesUpload} from "../multer";
 import Artist from "../models/Artist";
 import Track from "../models/Track";
 import permit from "../middleware/permit";
-import auth from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
+import artistsRouter from "./artists";
 
 const albumsRouter = express.Router();
 
@@ -66,4 +67,30 @@ albumsRouter.get("/:id", async (req, res, next) => {
         next(e);
     }
 });
+
+
+albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+    const user = req as RequestWithUser;
+
+    try{
+        const album = await Album.findById(req.params.id);
+
+        if (!album) {
+            res.status(404).send({error: 'Album not found'});
+            return;
+        }
+
+        if(user.user.role !== 'admin'){
+            if (String(user.user._id) !== String(album.username) || album.inPublished) {
+                res.status(401).send({ error: 'You cannot delete this album' });
+                return;
+            }
+        }
+
+        res.send({message: 'Album deleted successfully'});
+    }catch (e){
+        next(e)
+    }
+});
+
 export default albumsRouter;
