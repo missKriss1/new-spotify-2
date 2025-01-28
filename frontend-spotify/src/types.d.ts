@@ -18,14 +18,14 @@ export interface Album{
   _id: string;
   title: string;
   artist: Artists;
-  date: string;
+  date: number;
   image: File | null;
 }
 
 export interface IAlbumMutation{
   title: string;
   image: File | null;
-  date: string
+  date: number
   artist: string;
 }
 
@@ -33,6 +33,14 @@ export interface Track{
   _id: string;
   title: string;
   album: Album;
+  continuance: string;
+  number: number;
+}
+
+export interface ITrackMutation{
+  title: string;
+  album: string;
+  artist: string;
   continuance: string;
   number: number;
 }

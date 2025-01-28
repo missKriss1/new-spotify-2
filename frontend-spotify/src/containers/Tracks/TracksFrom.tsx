@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { IAlbumMutation } from '../../types';
+import { ITrackMutation } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectUser } from '../../features/users/userSlice.ts';
-import { useNavigate } from 'react-router-dom';
-import { selectCreatingError, selectCreatingLoading } from '../../features/albums/albumsSlice.ts';
-import ButtonLoading from '../../components/UI/ButtonLoading/ButtonLoading.tsx';
-import { addAlbum } from '../../features/albums/albumsThunlk.ts';
-import FileInput from '../../components/FileInput.tsx';
-import { selectArtists } from '../../features/artists/artistsSlice.ts';
 import { fetchArtists } from '../../features/artists/artistsThunk.ts';
+import {  albumsByArtists } from '../../features/albums/albumsThunlk.ts';
+import { useNavigate } from 'react-router-dom';
+import { selectUser } from '../../features/users/userSlice.ts';
+import { addTracks } from '../../features/tracks/tracksThunk.ts';
+import { selectCreatingError, selectCreatingLoading } from '../../features/tracks/tracksSlice.ts';
+import ButtonLoading from '../../components/UI/ButtonLoading/ButtonLoading.tsx';
+import { selectArtists } from '../../features/artists/artistsSlice.ts';
+import { selectAlbum } from '../../features/albums/albumsSlice.ts';
+
 
 const initialState = {
   title: '',
-  image: null,
-  date: 1930,
+  album: '',
   artist: '',
+  continuance: '',
+  number: 1
 };
 
-const AlbumsFrom = () => {
-  const [form, setForm] = useState<IAlbumMutation>({ ...initialState });
+const TracksFrom = () => {
+  const [form, setForm] = useState<ITrackMutation>({ ...initialState });
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
-  const artists = useAppSelector(selectArtists);
   const navigate = useNavigate();
+  const user = useAppSelector(selectUser);
   const isCreating = useAppSelector(selectCreatingLoading);
   const creatingError  = useAppSelector(selectCreatingError);
+  const artists = useAppSelector(selectArtists);
+  const albums = useAppSelector(selectAlbum)
 
   useEffect(() => {
     dispatch(fetchArtists());
-  }, [dispatch]);
+
+    if(form.artist !== ''){
+      dispatch(albumsByArtists(form.artist));
+    }
+
+  }, [dispatch, form.artist]);
 
   useEffect(() => {
     if (!user) navigate("/register");
@@ -38,9 +47,9 @@ const AlbumsFrom = () => {
     e.preventDefault()
 
     try{
-      await dispatch(addAlbum(form)).unwrap();
+      await dispatch(addTracks(form)).unwrap();
       setForm({...initialState});
-      navigate(`/albums?artist=${form.artist}`)
+      navigate(`/tracks?album=${form.album}`)
 
     }catch (e){
       console.error(e);
@@ -51,22 +60,8 @@ const AlbumsFrom = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    setForm((prevState: IAlbumMutation) => ({ ...prevState, [name]: value }));
+    setForm((prevState: ITrackMutation) => ({ ...prevState, [name]: value }));
   };
-
-  const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, files } = e.target;
-
-    if (files) {
-      setForm((prevState: IAlbumMutation) => ({
-        ...prevState,
-        [name]: files[0] || null,
-      }));
-    }
-  };
-
 
   const getFieldError = (fieldName: string) => {
     try {
@@ -82,7 +77,7 @@ const AlbumsFrom = () => {
         style={{maxWidth: "500px"}}
         className="container mt-5 bg-white p-4 shadow rounded"
       >
-        <h3 className="text-center mb-5 mt-2">New album</h3>
+        <h3 className="text-center mb-5 mt-2">New track</h3>
 
         <form onSubmit={onFormSubmit}>
           <label htmlFor="title">Title</label>
@@ -101,19 +96,17 @@ const AlbumsFrom = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="date">Date of realization</label>
-            <input
-              type="number"
-              name="date"
-              id="date"
-              min={1930}
-              value={form.date}
+            <label htmlFor="continuance">Continuance</label>
+            <textarea
+              name="continuance"
+              id="continuance"
+              value={form.continuance}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('date') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError('continuance') ? 'is-invalid' : ''}`}
             />
-            {getFieldError('date') && (
+            {getFieldError('continuance') && (
               <div className="invalid-feedback">
-                {getFieldError('date')}
+                {getFieldError('continuance')}
               </div>
             )}
           </div>
@@ -139,20 +132,42 @@ const AlbumsFrom = () => {
             )}
           </div>
 
+          <div className="mb-3">
+            <label htmlFor="artist">Album</label>
+            <select
+              name="album"
+              id="album"
+              value={form.album}
+              onChange={onInputChange}
+              className={`form-control ${getFieldError('album') ? 'is-invalid' : ''}`}
+            >
+              <option value="">Select an album</option>
+              {albums.map((album) => (
+                <option key={album._id} value={album._id}>
+                  {album.title}
+                </option>
+              ))}
+            </select>
+            {getFieldError('album') && (
+              <div className="invalid-feedback">{getFieldError('album')}</div>
+            )}
+          </div>
 
           <div className="mb-3">
-            <label htmlFor="date">Photo</label>
-            <FileInput
-              id="image"
-              name="image"
-              label="Photo"
-              onGetFile={onFileChange}
-              file={form.image}
-              className={`form-control ${getFieldError('image') ? 'is-invalid' : ''}`}
+            <input
+              type="number"
+              name="number"
+              id="number"
+              min={1}
+              value={form.number}
+              onChange={onInputChange}
+              className={`form-control ${getFieldError('number') ? 'is-invalid' : ''}`}
             />
-
-            {getFieldError('image') && (
-              <div className="invalid-feedback">{getFieldError('image')}</div>
+            <label htmlFor="number">Number</label>
+            {getFieldError('number') && (
+              <div className="invalid-feedback">
+                {getFieldError('number')}
+              </div>
             )}
           </div>
 
@@ -160,7 +175,7 @@ const AlbumsFrom = () => {
             <ButtonLoading
               isLoading={isCreating}
               isDisabled={isCreating}
-              text="Add new album"
+              text="Add new track"
             />
           </div>
         </form>
@@ -169,4 +184,4 @@ const AlbumsFrom = () => {
   );
 };
 
-export default AlbumsFrom;
+export default TracksFrom;

@@ -5,7 +5,7 @@ import Artist from "../models/Artist";
 import Track from "../models/Track";
 import permit from "../middleware/permit";
 import auth, {RequestWithUser} from "../middleware/auth";
-import artistsRouter from "./artists";
+import { Error } from "mongoose";
 
 const albumsRouter = express.Router();
 
@@ -30,7 +30,7 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
         const albumsData = {
             title: req.body.title,
             artist: req.body.artist,
-            date: new Date(req.body.date).getTime(),
+            date: req.body.date,
             image: req.file ? req.file.filename : null,
             user: user._id
 
@@ -39,8 +39,12 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
         const album = new Album(albumsData);
         await album.save();
         res.send(album);
-    } catch (e) {
-        next(e);
+    } catch (error) {
+        if (error instanceof Error.ValidationError) {
+            res.status(400).send(error);
+            return;
+        }
+        next(error);
     }
 });
 

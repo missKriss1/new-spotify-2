@@ -75,6 +75,7 @@ const ArtistsForm = () => {
         <h3 className="text-center mb-5 mt-2">New artist</h3>
 
         <form onSubmit={onFormSubmit}>
+          <label htmlFor="name">Name artist</label>
           <div className="mb-3">
             <input
               type="text"
@@ -82,42 +83,41 @@ const ArtistsForm = () => {
               id="name"
               value={form.name}
               onChange={onInputChange}
-              className={`form-control ${getFieldError("name") ? "is-invalid" : ""}`}
+              className={`form-control ${getFieldError('name') ? 'is-invalid' : ''}`}
             />
-            <label htmlFor="name">Name artist</label>
-            {getFieldError("name") && (
-              <div className="invalid-feedback">{getFieldError("name")}</div>
+            {getFieldError('name') && (
+              <div className="invalid-feedback">{getFieldError('name')}</div>
             )}
           </div>
 
           <div className="mb-3">
+            <label htmlFor="information">Information</label>
             <textarea
               name="information"
               id="information"
               value={form.information}
               onChange={onInputChange}
-              className={`form-control ${getFieldError("information") ? "is-invalid" : ""}`}
+              className={`form-control ${getFieldError('information') ? 'is-invalid' : ''}`}
             />
-            <label htmlFor="information">Information</label>
-            {getFieldError("information") && (
+            {getFieldError('information') && (
               <div className="invalid-feedback">
-                {getFieldError("information")}
+                {getFieldError('information')}
               </div>
             )}
           </div>
 
           <div className="mb-3">
+            <label htmlFor="information">Photo</label>
             <FileInput
               id="image"
               name="image"
-              label="Изображение"
+              label="Photo"
               onGetFile={onFileChange}
               file={form.image}
-              className={`form-control ${getFieldError("image") ? "is-invalid" : ""}`}
+              className={`form-control ${getFieldError('image') ? 'is-invalid' : ''}`}
             />
-
-            {getFieldError("image") && (
-              <div className="invalid-feedback">{getFieldError("image")}</div>
+            {getFieldError('image') && (
+              <div className="invalid-feedback">{getFieldError('image')}</div>
             )}
           </div>
 

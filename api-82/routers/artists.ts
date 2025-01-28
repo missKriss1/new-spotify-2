@@ -1,7 +1,7 @@
 import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
-import mongoose from "mongoose";
+import  {Error} from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 
@@ -27,15 +27,12 @@ artistsRouter.post('/', imagesUpload.single('image'), auth, permit('admin', 'use
         const artist = new Artist(artistsData)
         await artist.save()
         res.send(artist)
-    }catch (e){
-        if(e instanceof mongoose.Error.ValidationError){
-            const ValidationError = Object.keys(e.errors).map(key =>({
-                field: key,
-                message: e.errors[key].message,
-            }))
-            res.status(400).send({error: ValidationError});
+    }catch (error){
+        if (error instanceof Error.ValidationError) {
+            res.status(400).send(error);
+            return;
         }
-        next(e)
+        next(error)
     }
 })
 

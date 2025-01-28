@@ -51,6 +51,11 @@ const UserMenu: React.FC<Props> = ({user}) => {
             </NavLink>
           </MenuItem>
           <MenuItem onClick={hendelClose}>
+            <NavLink to={'/add_new_track'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Add new track
+            </NavLink>
+          </MenuItem>
+          <MenuItem onClick={hendelClose}>
             <NavLink to={'/track_history'} style={{ textDecoration: 'none', color: 'inherit' }}>
               Track History
             </NavLink>

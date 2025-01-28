@@ -4,10 +4,16 @@ const ArtistSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        validate: {
+            validator: async function (value: string): Promise<boolean> {
+                return value.trim().length > 0;
+            },
+            message: "Name is required",
+        },
     },
     image:{
         type: String,
-        default: null
+        default: null,
     },
     information: {
         type: String,
