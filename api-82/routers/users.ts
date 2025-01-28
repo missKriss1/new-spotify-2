@@ -1,6 +1,7 @@
 import express from "express";
 import {Error} from "mongoose";
 import User from "../models/User";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const userRouter = express.Router();
 
@@ -51,6 +52,22 @@ userRouter.post("/sessions", async (req, res, next) => {
         }
         next(error);
     }
-})
+});
+
+userRouter.delete('/sessions', auth, async (req, res, next) => {
+    let reqWithAuth = req as RequestWithUser;
+    const userFromAuth = reqWithAuth.user;
+    try {
+        const user = await User.findOne({_id: userFromAuth._id});
+
+        if (user) {
+            user.generateToken();
+            await user.save();
+            res.send({message: 'Вы успешно вышли из системы.'});
+        }
+    } catch (e) {
+        next(e);
+    }
+});
 
 export default userRouter

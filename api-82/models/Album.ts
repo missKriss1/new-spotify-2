@@ -17,6 +17,11 @@ const AlbumSchema = new mongoose.Schema({
     image:{
         type: String,
         default: null
+    },
+    inPublished: {
+        type: Boolean,
+        default: false,
+        required: true,
     }
 })
 
