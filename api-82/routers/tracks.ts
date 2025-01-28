@@ -1,10 +1,12 @@
 import express from "express";
 import Track from "../models/Track";
 import mongoose from "mongoose";
+import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const tracksRouter = express.Router();
 
-tracksRouter.post('/', async (req, res, next) => {
+tracksRouter.post('/', auth, permit('admin', 'user'), async (req, res, next) => {
     const numberTrack = Number(req.body.number)
 
     const tracksData = {

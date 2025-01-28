@@ -2,10 +2,12 @@ import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
+import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const artistsRouter = express.Router();
 
-artistsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
+artistsRouter.post('/', imagesUpload.single('image'), auth, permit('admin', 'user'), async (req, res, next) => {
     const artistsData = {
         name: req.body.name,
         information: req.body.information,

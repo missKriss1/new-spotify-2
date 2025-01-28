@@ -3,10 +3,12 @@ import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import Artist from "../models/Artist";
 import Track from "../models/Track";
+import permit from "../middleware/permit";
+import auth from "../middleware/auth";
 
 const albumsRouter = express.Router();
 
-albumsRouter.post("/", imagesUpload.single("image"), async (req, res, next) => {
+albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user'), async (req, res, next) => {
     if (req.body.artist) {
         const artist = await Artist.findById(req.body.artist);
         if (!artist) {
