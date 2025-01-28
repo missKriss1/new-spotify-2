@@ -1,6 +1,6 @@
-import { Artists } from '../../types';
+import { Artists, ValidationError } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchArtists, getArtistById } from './artistsThunk.ts';
+import { addArtist, fetchArtists, getArtistById } from './artistsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
 interface ArtistsState {
@@ -8,6 +8,8 @@ interface ArtistsState {
   artist: Artists |null;
   fetchingLoading: boolean;
   fetchError: boolean;
+  isCreating: boolean;
+  creatingError: ValidationError | null;
 }
 
 const initialState: ArtistsState = {
@@ -15,11 +17,15 @@ const initialState: ArtistsState = {
   artist: null,
   fetchingLoading: false,
   fetchError: false,
+  isCreating: false,
+  creatingError: null,
 }
 
 export const selectArtists = (state: RootState) => state.artists.artists
 export const selectOneArtist = (state: RootState) => state.artists.artist
 export const selectArtistsLoading = (state: RootState) => state.artists.fetchingLoading
+export const selectCreatingError = (state: RootState) => state.artists.creatingError
+export const selectCreatingLoading = (state: RootState) => state.artists.isCreating
 
 export const artistsSlice = createSlice({
   name: "artists",
@@ -46,6 +52,17 @@ export const artistsSlice = createSlice({
       })
       .addCase(getArtistById.rejected, (state) =>{
         state.fetchError = true
+      })
+      .addCase(addArtist.pending, (state) => {
+        state.isCreating = true;
+        state.creatingError = null;
+      })
+      .addCase(addArtist.fulfilled, (state) => {
+        state.isCreating = false;
+      })
+      .addCase(addArtist.rejected, (state, { payload: error }) => {
+        state.isCreating = false;
+        state.creatingError = error || null;
       })
   }
 })

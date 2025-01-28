@@ -11,12 +11,20 @@ const tracksRouter = express.Router();
 
 tracksRouter.post('/', auth, permit('admin', 'user'), async (req, res, next) => {
     const numberTrack = Number(req.body.number)
+    let reqWithAuth = req as RequestWithUser;
+    const user = reqWithAuth.user
+
+    if (!user) {
+        res.status(400).send({error: 'User not found'});
+        return;
+    }
 
     const tracksData = {
         title: req.body.title,
         album: req.body.album,
         continuance:req.body.continuance,
         number: numberTrack,
+        user: user._id
     }
 
     try {
@@ -78,7 +86,7 @@ tracksRouter.get('/', async (req, res, next) => {
 })
 
 tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
-    const user = req as RequestWithUser;
+    let reqWithAuth = req as RequestWithUser;
     try{
 
         const track = await Track.findById(req.params.id);
@@ -88,8 +96,8 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
             return;
         }
 
-        if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(track.username) || track.isPublished) {
+        if(reqWithAuth.user.role !== 'admin'){
+            if (String(reqWithAuth.user._id) !== String(track.user) || track.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this track' });
                 return;
             }

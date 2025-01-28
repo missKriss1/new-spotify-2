@@ -1,16 +1,31 @@
 export interface Artists{
   _id: string;
   name: string;
-  image: string;
+  image: File | null;
+  information: string;
+  isPublished: boolean;
+  username: string;
+}
+
+export interface IArtistMutation{
+  name: string;
+  image: File | null;
   information: string;
 }
+
 
 export interface Album{
   _id: string;
   title: string;
   artist: Artists;
   date: number;
-  image: string;
+  image: File | null;
+}
+
+export interface IAlbumMutation{
+  title: string;
+  image: File | null;
+  date: number;
 }
 
 export interface Track{

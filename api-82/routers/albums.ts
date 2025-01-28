@@ -10,6 +10,15 @@ import artistsRouter from "./artists";
 const albumsRouter = express.Router();
 
 albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user'), async (req, res, next) => {
+
+    let reqWithAuth = req as RequestWithUser;
+    const user = reqWithAuth.user
+
+    if (!user) {
+        res.status(400).send({error: 'User not found'});
+        return;
+    }
+
     if (req.body.artist) {
         const artist = await Artist.findById(req.body.artist);
         if (!artist) {
@@ -23,6 +32,7 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
             artist: req.body.artist,
             date: parseDate,
             image: req.file ? req.file.filename : null,
+            user: user._id
 
         };
 
@@ -96,7 +106,7 @@ albumsRouter.get("/:id", async (req, res, next) => {
 
 
 albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
-    const user = req as RequestWithUser;
+    let reqWithAuth = req as RequestWithUser;
 
     try{
         const album = await Album.findById(req.params.id);
@@ -106,8 +116,8 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
             return;
         }
 
-        if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(album.username) || album.isPublished) {
+        if(reqWithAuth.user.role !== 'admin'){
+            if (String(reqWithAuth.user._id) !== String(album.user) || album.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this album' });
                 return;
             }

@@ -33,12 +33,24 @@ const UserMenu: React.FC<Props> = ({user}) => {
       <Button color='inherit' onClick={handleClick}>
         Hello, {user?.username}
       </Button>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={hendelClose}>
-        <MenuItem>
-          <NavLink to={'/track_history'} style={{textDecoration: 'none', color: 'inherit'}}>
-            Track History
-          </NavLink>
-        </MenuItem>
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={hendelClose}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <MenuItem onClick={hendelClose}>
+            <NavLink to={'/add_new_artist'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Add new artist
+            </NavLink>
+          </MenuItem>
+          <MenuItem onClick={hendelClose}>
+            <NavLink to={'/track_history'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Track History
+            </NavLink>
+          </MenuItem>
+        </div>
       </Menu>
       <button
         type={"button"}

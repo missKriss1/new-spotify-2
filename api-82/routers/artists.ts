@@ -8,10 +8,19 @@ import permit from "../middleware/permit";
 const artistsRouter = express.Router();
 
 artistsRouter.post('/', imagesUpload.single('image'), auth, permit('admin', 'user'), async (req, res, next) => {
+    let reqWithAuth = req as RequestWithUser;
+    const user = reqWithAuth.user
+
+    if (!user) {
+        res.status(400).send({error: 'User not found'});
+        return;
+    }
+
     const artistsData = {
         name: req.body.name,
         information: req.body.information,
-        image: req.file ? req.file.filename : null
+        image: req.file ? req.file.filename : null,
+        user: user._id
     }
 
     try{
@@ -79,7 +88,7 @@ artistsRouter.get('/:id', async (req, res, next) => {
 })
 
 artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
-    const user = req as RequestWithUser;
+    let expressReq = req as RequestWithUser;
     try{
 
         const artist = await Artist.findById(req.params.id);
@@ -89,8 +98,8 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
             return;
         }
 
-        if(user.user.role !== 'admin'){
-            if (String(user.user._id) !== String(artist.username) || artist.isPublished) {
+        if(expressReq.user.role !== 'admin'){
+            if (String(expressReq.user._id) !== String(artist.user) || artist.isPublished) {
                 res.status(401).send({ error: 'You cannot delete this artist' });
                 return;
             }
