@@ -30,7 +30,7 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
         const albumsData = {
             title: req.body.title,
             artist: req.body.artist,
-            date: parseDate,
+            date: new Date(req.body.date).getTime(),
             image: req.file ? req.file.filename : null,
             user: user._id
 

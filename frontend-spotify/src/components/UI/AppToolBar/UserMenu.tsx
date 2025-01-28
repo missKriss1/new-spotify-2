@@ -46,6 +46,11 @@ const UserMenu: React.FC<Props> = ({user}) => {
             </NavLink>
           </MenuItem>
           <MenuItem onClick={hendelClose}>
+            <NavLink to={'/add_new_album'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Add new album
+            </NavLink>
+          </MenuItem>
+          <MenuItem onClick={hendelClose}>
             <NavLink to={'/track_history'} style={{ textDecoration: 'none', color: 'inherit' }}>
               Track History
             </NavLink>

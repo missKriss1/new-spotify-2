@@ -8,6 +8,7 @@ import RegisterUser from './features/users/RegisterUser.tsx';
 import LoginUser from './features/users/LoginUser.tsx';
 import TrackHistories from './containers/TrackHistories/TrackHistories.tsx';
 import ArtistsForm from './containers/Atists/ArtistsForm.tsx';
+import AlbumsFrom from './containers/Albums/AlbumsFrom.tsx';
 
 const App = () => {
   return(
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/tracks" element={<Tracks />} />
             <Route path="/track_history" element={<TrackHistories />} />
             <Route path="/add_new_artist" element={<ArtistsForm />} />
+            <Route path="/add_new_album" element={<AlbumsFrom/>} />
           </Routes>
         </Container>
       </main>
