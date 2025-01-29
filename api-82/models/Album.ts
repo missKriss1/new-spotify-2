@@ -13,12 +13,6 @@ const AlbumSchema = new mongoose.Schema({
     date: {
         type: Number,
         required: true,
-        validate: {
-            validator: async function (value: string): Promise<boolean> {
-                return value.trim().length > 0;
-            },
-            message: "Date is required",
-        },
     },
     image:{
         type: String,

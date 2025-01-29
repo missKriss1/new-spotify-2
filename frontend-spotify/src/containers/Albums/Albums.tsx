@@ -43,7 +43,7 @@ const Albums = () => {
             <Grid container spacing={2}>
               {albums.map((album) => (
                 <Grid size={{xs: 6, md: 4}} key={album._id}>
-                  <AlbumCard album={album}/>
+                    <AlbumCard album={album}/>
                 </Grid>
               ))}
             </Grid>

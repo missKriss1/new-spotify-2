@@ -23,12 +23,7 @@ const TrackSchema = new mongoose.Schema({
     number:{
         type: Number,
         default: 0,
-        validate: {
-            validator: async function (value: string): Promise<boolean> {
-                return value.trim().length > 0;
-            },
-            message: "Number is required",
-        },
+        required: [true, 'Number is required'],
     },
     isPublished: {
         type: Boolean,

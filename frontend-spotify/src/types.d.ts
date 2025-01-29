@@ -5,6 +5,7 @@ export interface Artists{
   information: string;
   isPublished: boolean;
   username: string;
+  user: User;
 }
 
 export interface IArtistMutation{
@@ -20,6 +21,8 @@ export interface Album{
   artist: Artists;
   date: number;
   image: File | null;
+  isPublished: boolean;
+  user: User;
 }
 
 export interface IAlbumMutation{
@@ -35,6 +38,8 @@ export interface Track{
   album: Album;
   continuance: string;
   number: number;
+  isPublished: boolean;
+  user: User;
 }
 
 export interface ITrackMutation{
@@ -65,6 +70,7 @@ export interface LogInMutation {
 export interface User{
   _id: string;
   username: string;
+  role: string
   token: string;
 }
 

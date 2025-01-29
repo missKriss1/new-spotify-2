@@ -64,7 +64,7 @@ artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, r
 
 artistsRouter.get('/', async (req, res, next) => {
     try{
-        const artists = await Artist.find()
+        const artists = await Artist.find().populate('user')
         res.send(artists)
     }catch (e){
         next(e)

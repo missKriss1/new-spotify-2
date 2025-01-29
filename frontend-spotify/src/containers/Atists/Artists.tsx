@@ -31,7 +31,9 @@ const Artists = () => {
               <Grid container spacing={2}>
                 {artists.map((artist) => (
                   <Grid size={{xs: 6, md: 4}} key={artist._id}>
-                    <ArtistCard artist={artist}/>
+                      <>
+                        <ArtistCard artist={artist}/>
+                      </>
                   </Grid>
                 ))}
               </Grid>

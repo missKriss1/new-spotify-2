@@ -12,7 +12,7 @@ const Tracks = () => {
   const dispatch = useAppDispatch();
   const params = new URLSearchParams(document.location.search);
   const tracksId = params.get('album');
-  const loading = useAppSelector(selectTracksLoading)
+  const loading = useAppSelector(selectTracksLoading);
 
   useEffect(() => {
     if (tracksId) {
@@ -36,10 +36,10 @@ const Tracks = () => {
             <Grid container spacing={2}>
               {tracks.map((track) => (
                 <Grid size={{xs: 6, md: 4}} key={track._id}>
-                  <TrackCard
-                    track={track}
-                    key={track._id}
-                  />
+                    <TrackCard
+                      track={track}
+                      key={track._id}
+                    />
                 </Grid>
               ))}
             </Grid>

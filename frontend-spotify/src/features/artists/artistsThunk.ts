@@ -58,4 +58,12 @@ export const addArtist = createAsyncThunk<
   }
 );
 
+export const toggleArtistsPublish = createAsyncThunk(
+  'artists/toggleArtists',
+  async (artistId: string) =>{
+    await axiosApi.patch(`/artists/${artistId}/togglePublished`);
+    return artistId;
+  }
+)
+
 

@@ -71,7 +71,7 @@ tracksRouter.get('/', async (req, res, next) => {
             res.status(400).send({ error: 'Album ID is required' });
             return;
         }
-        const tracks = await Track.find({ album: albumById })
+        const tracks = await Track.find({ album: albumById }).populate('user')
             .populate('album')
             .sort({number: 1})
         res.send(tracks);

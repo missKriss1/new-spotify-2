@@ -18,22 +18,11 @@ export const addAlbum= createAsyncThunk<
   { state: RootState; rejectValue: ValidationError }
 >(
   "albums/addArtist",
-  async (albumMutation, { getState, rejectWithValue }) => {
+  async (newAlbum: IAlbumMutation, { getState, rejectWithValue }) => {
     const token = getState().users.user?.token;
 
     try {
-      const formData = new FormData();
-      const keys = Object.keys(albumMutation) as (keyof IAlbumMutation)[];
-
-      keys.forEach((key) => {
-        const value = albumMutation[key];
-
-        if (value !== null) {
-          formData.append(key, value);
-        }
-      });
-
-      const response = await axiosApi.post<Album>("/albums", formData, {
+      const response = await axiosApi.post<Album>("/albums", newAlbum, {
         headers: { Authorization: token },
       });
 

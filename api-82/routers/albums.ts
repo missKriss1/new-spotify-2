@@ -30,7 +30,7 @@ albumsRouter.post("/", imagesUpload.single("image"), auth, permit('admin', 'user
         const albumsData = {
             title: req.body.title,
             artist: req.body.artist,
-            date: req.body.date,
+            date: parseDate,
             image: req.file ? req.file.filename : null,
             user: user._id
 
@@ -80,7 +80,7 @@ albumsRouter.get("/", async (req, res, next) => {
         const artistById = req.query.artist;
         let album
         if (artistById) {
-            album = await Album.find({artist: artistById})
+            album = await Album.find({artist: artistById}).populate('user')
                 .populate('artist')
 
         }else{
