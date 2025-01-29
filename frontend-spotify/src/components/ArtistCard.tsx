@@ -1,6 +1,6 @@
 import { Artists } from '../types';
 import * as React from 'react';
-import { Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Box, Button } from '@mui/material';
 import zaglushka from '/src/assets/zaglushka.jpg';
 import { apiUrl } from '../globalConstants.ts';
 import { useNavigate } from 'react-router-dom';
@@ -9,15 +9,12 @@ import { selectUser } from '../features/users/userSlice.ts';
 
 interface Props {
   artist: Artists;
+  deleteArtist: (id: string) => void
 }
 
-const ArtistCard: React.FC<Props> = ({ artist }) => {
+const ArtistCard: React.FC<Props> = ({ artist, deleteArtist }) => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
-
-  console.log("User state:", user);
-  console.log("Artist state:", artist);
-
   let imageZaglushka = zaglushka;
 
   if (artist.image) {
@@ -48,51 +45,54 @@ const ArtistCard: React.FC<Props> = ({ artist }) => {
             {artist.name}
           </Typography>
 
-          {user?.role === 'admin' && !artist.isPublished && (
-            <Box
-              sx={{
-                backgroundColor: 'rgba(255, 255, 0, 0.8)',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                display: 'inline-block',
-                marginTop: '8px',
-              }}
-            >
-              <Typography
-                variant="body2"
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 2,
+              marginTop: '8px',
+            }}
+          >
+          {(!artist.isPublished && (user.role === 'admin' || user._id === artist.user._id)) && (
+              <Box
                 sx={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
+                  backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
                 }}
               >
-                Unpublished
-              </Typography>
-            </Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Unpublished
+                </Typography>
+              </Box>
           )}
+            {user.role === 'admin' || user._id === artist.user._id ? (
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                onClick={(e) => {e.stopPropagation(); deleteArtist(artist._id)}}
+                sx={{
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  borderRadius: '8px',
+                  marginLeft: '16px',
+                }}
+              >
+                Delete
+              </Button>
+            ) : null}
+        </Box>
 
-          { user._id === artist.user._id && !artist.isPublished && (
-            <Box
-              sx={{
-                backgroundColor: 'rgba(255, 0, 0, 0.8)',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                display: 'inline-block',
-                marginTop: '8px',
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Unpublished
-              </Typography>
-            </Box>
-          )}
+
         </CardContent>
       </Card>
     </div>

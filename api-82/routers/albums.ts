@@ -109,8 +109,8 @@ albumsRouter.get("/:id", async (req, res, next) => {
 });
 
 
-albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
-    let reqWithAuth = req as RequestWithUser;
+albumsRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next) => {
+    let expressReq = req as RequestWithUser;
 
     try{
         const album = await Album.findById(req.params.id);
@@ -120,14 +120,24 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
             return;
         }
 
-        if(reqWithAuth.user.role !== 'admin'){
-            if (String(reqWithAuth.user._id) !== String(album.user) || album.isPublished) {
-                res.status(401).send({ error: 'You cannot delete this album' });
-                return;
-            }
+        if (expressReq.user.role === 'admin') {
+            await Album.findByIdAndDelete(req.params.id);
+            res.send({ message: 'Album deleted successfully' });
+            return
         }
 
-        res.send({message: 'Album deleted successfully'});
+        if (String(expressReq.user._id) === String(album.user)) {
+            if (!album.isPublished) {
+                await Album.findByIdAndDelete(req.params.id);
+                res.send({ message: 'Album deleted successfully' });
+                return
+            } else {
+                res.status(403).send({ error: 'You cannot delete a published album' });
+                return
+            }
+        }
+        res.status(401).send({ error: 'You cannot delete this album' });
+        return;
     }catch (e){
         next(e)
     }

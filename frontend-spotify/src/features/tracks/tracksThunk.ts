@@ -40,3 +40,14 @@ export const addTracks = createAsyncThunk<
   }
 );
 
+export const deleteTrack= createAsyncThunk<void, string, { state: RootState }>(
+  'tracks/deleteTrack',
+  async (id: string, {getState}) =>{
+    const token = getState().users.user?.token;
+
+    await axiosApi.delete(`/tracks/${id}`, {
+      headers: { Authorization: token },
+    });
+  }
+)
+

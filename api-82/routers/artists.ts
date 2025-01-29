@@ -84,7 +84,7 @@ artistsRouter.get('/:id', async (req, res, next) => {
     }
 })
 
-artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+artistsRouter.delete('/:id', auth, permit('admin', 'user'), async (req, res, next) => {
     let expressReq = req as RequestWithUser;
     try{
 
@@ -95,16 +95,25 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
             return;
         }
 
-        if(expressReq.user.role !== 'admin'){
-            if (String(expressReq.user._id) !== String(artist.user) || artist.isPublished) {
-                res.status(401).send({ error: 'You cannot delete this artist' });
-                return;
+        if (expressReq.user.role === 'admin') {
+            await Artist.findByIdAndDelete(req.params.id);
+            res.send({ message: 'Artist deleted successfully' });
+            return
+        }
+
+        if (String(expressReq.user._id) === String(artist.user)) {
+            if (!artist.isPublished) {
+                await Artist.findByIdAndDelete(req.params.id);
+                res.send({ message: 'Artist deleted successfully' });
+                return
+            } else {
+                res.status(403).send({ error: 'You cannot delete a published artist' });
+                return
             }
         }
 
-        await Artist.findByIdAndDelete(req.params.id);
-
-        res.send({message: 'Artist deleted successfully'});
+        res.status(401).send({ error: 'You cannot delete this artist' });
+        return;
     }catch (e){
         next(e)
     }

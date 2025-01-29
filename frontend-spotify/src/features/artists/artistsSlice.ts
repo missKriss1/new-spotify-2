@@ -68,16 +68,14 @@ export const artistsSlice = createSlice({
         state.creatingError = error || null;
       })
       .addCase(toggleArtistsPublish.pending, (state) => {
-        state.fetchingLoading = true;
         state.fetchError = false;
       })
       .addCase(toggleArtistsPublish.fulfilled, (state) => {
         state.fetchingLoading = false;
       })
       .addCase(toggleArtistsPublish.rejected, (state) => {
-        state.isCreating = false;
         state.fetchError = true
-      })
+      });
   }
 })
 

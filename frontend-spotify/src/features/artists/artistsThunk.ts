@@ -58,11 +58,21 @@ export const addArtist = createAsyncThunk<
   }
 );
 
+export const deleteArtist = createAsyncThunk<void, string, { state: RootState }>(
+  'artists/deleteArtist',
+  async (id: string, {getState}) =>{
+    const token = getState().users.user?.token;
+
+    await axiosApi.delete(`/artists/${id}`, {
+      headers: { Authorization: token },
+    });
+  }
+)
+
 export const toggleArtistsPublish = createAsyncThunk(
   'artists/toggleArtists',
   async (artistId: string) =>{
     await axiosApi.patch(`/artists/${artistId}/togglePublished`);
-    return artistId;
   }
 )
 

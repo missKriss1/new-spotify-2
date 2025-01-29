@@ -39,3 +39,14 @@ export const addAlbum= createAsyncThunk<
     }
   }
 );
+
+export const deleteAlbum= createAsyncThunk<void, string, { state: RootState }>(
+  'albums/deleteAlbum',
+  async (id: string, {getState}) =>{
+    const token = getState().users.user?.token;
+
+    await axiosApi.delete(`/albums/${id}`, {
+      headers: { Authorization: token },
+    });
+  }
+)

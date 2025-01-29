@@ -7,9 +7,10 @@ import { Box, Typography } from '@mui/material';
 
 interface Props {
   track: Track;
+  deleteTrack: (id: string) => void;
 }
 
-const TrackCard: React.FC<Props> = ({ track }) => {
+const TrackCard: React.FC<Props> = ({ track, deleteTrack }) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
 
@@ -30,71 +31,51 @@ const TrackCard: React.FC<Props> = ({ track }) => {
         style={{ position: 'relative' }}
       >
         <div className="text-start">
+          {(!track.isPublished && (user?.role === 'admin' || user?._id === track.user._id)) && (
+            <Box
+              sx={{
+                left: '10%',
+                marginBottom: '10px',
+                backgroundColor: 'rgba(255, 0, 0, 0.9)',
+                padding: '6px 16px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                zIndex: 1,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                maxWidth: '70%',
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                  fontSize: '1rem',
+                  letterSpacing: '1px',
+                }}
+              >
+                Unpublished
+              </Typography>
+            </Box>
+          )}
           <h5>
             № {track.number} - {track.title}
           </h5>
           <p className="opacity-75 text-end mb-0">Continuance: {track.continuance}</p>
-          <button className="btn btn-primary" onClick={() => clickByTrack(track._id)}>
-            Play
-          </button>
-
-          {user?._id === track.user._id && !track.isPublished && (
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                backgroundColor: 'rgba(255, 0, 0, 0.9)',
-                padding: '6px 16px',
-                borderRadius: '8px',
-                textAlign: 'center',
-                zIndex: 1,
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                  fontSize: '1rem',
-                  letterSpacing: '1px',
-                }}
+          <div className="d-flex">
+            <button className="btn btn-primary" onClick={() => clickByTrack(track._id)}>
+              Play
+            </button>
+            {(user?.role === 'admin' || (user?._id === track.user._id && !track.isPublished)) ? (
+              <button
+                className="btn btn-danger ms-2"
+                onClick={() => deleteTrack(track._id)}
               >
-                Unpublished
-              </Typography>
-            </Box>
-          )}
-
-          {!track.isPublished && user?.role === 'admin' && (
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                backgroundColor: 'rgba(255, 0, 0, 0.9)',
-                padding: '6px 16px',
-                borderRadius: '8px',
-                textAlign: 'center',
-                zIndex: 1,
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                  fontSize: '1rem',
-                  letterSpacing: '1px',
-                }}
-              >
-                Unpublished
-              </Typography>
-            </Box>
-          )}
+                Delete
+              </button>
+            ):null}
+          </div>
         </div>
       </div>
     </div>

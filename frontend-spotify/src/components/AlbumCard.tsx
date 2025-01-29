@@ -1,6 +1,6 @@
 import { Album } from '../types';
 import * as React from 'react';
-import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, Typography } from '@mui/material';
 import zaglushka from '/src/assets/zaglushka.jpg';
 import { apiUrl } from '../globalConstants.ts';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,10 @@ import { selectUser } from '../features/users/userSlice.ts';
 
 interface Props {
   album: Album;
+  deleteAlbum: (id: string) => void
 }
 
-const AlbumCard: React.FC<Props> = ({ album }) => {
+const AlbumCard: React.FC<Props> = ({ album, deleteAlbum }) => {
   const albumImage = album.image ? `${apiUrl}/${album.image}` : zaglushka;
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
@@ -23,33 +24,8 @@ const AlbumCard: React.FC<Props> = ({ album }) => {
   return (
     <div onClick={clickByAlbum} style={{ position: 'relative', cursor: 'pointer' }}>
       <Card sx={{ maxWidth: 345, boxShadow: 3, margin: '16px', position: 'relative' }}>
-        {user?.role === 'admin' && !album.isPublished && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '20px',
-              left: '70%',
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: 'rgba(255, 0, 0, 0.8)',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              textAlign: 'center',
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                color: '#fff',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-              }}
-            >
-              Unpublished
-            </Typography>
-          </Box>
-        )}
 
-        {user?._id === album.user._id && !album.isPublished && (
+        {(!album.isPublished && (user?.role === 'admin' || user?._id === album.user._id)) && (
           <Box
             sx={{
               position: 'absolute',
@@ -92,7 +68,24 @@ const AlbumCard: React.FC<Props> = ({ album }) => {
           <Typography variant="body2" color="text.secondary">
             {album.date ? `Year: ${album.date}` : 'Year not available'}
           </Typography>
+          {user?.role === 'admin' || user?._id === album.user._id ? (
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                marginTop: 2,
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                borderRadius: '8px',
+              }}
+              onClick={(e) => {e.stopPropagation(); deleteAlbum(album._id)}}
+            >
+              Delete
+            </Button>
+           ): null}
         </CardContent>
+
       </Card>
     </div>
   );
