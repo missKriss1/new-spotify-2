@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import TrackCard from '../../components/TrackCard.tsx';
 import { useEffect } from 'react';
-import { deleteTrack, fetchAllTrackByAlbum } from '../../features/tracks/tracksThunk.ts';
+import { deleteTrack, fetchAllTrackByAlbum, toggleTrackPublish } from '../../features/tracks/tracksThunk.ts';
 import Spinner from '../../components/UI/Spinner/Spinner.tsx';
 
 const Tracks = () => {
@@ -31,6 +31,17 @@ const Tracks = () => {
     }
   };
 
+  const publishTrackClick = async (id: string) => {
+    try{
+      await dispatch(toggleTrackPublish(id))
+      if (tracksId) {
+        await dispatch(fetchAllTrackByAlbum(tracksId));
+      }
+    }catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {loading ? (
@@ -51,6 +62,7 @@ const Tracks = () => {
                     track={track}
                     key={track._id}
                     deleteTrack={deleteTrackById}
+                    publishTrack={publishTrackClick}
                   />
                 </Grid>
               ))}

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectAlbum, selectAlbumsLoading } from '../../features/albums/albumsSlice.ts';
 import AlbumCard from '../../components/AlbumCard.tsx';
 import { useEffect } from 'react';
-import { albumsByArtists, deleteAlbum } from '../../features/albums/albumsThunlk.ts';
+import { albumsByArtists, deleteAlbum, toggleAlbumPublish } from '../../features/albums/albumsThunlk.ts';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { selectOneArtist } from '../../features/artists/artistsSlice.ts';
@@ -35,6 +35,17 @@ const Albums = () => {
     }
   };
 
+  const publishAlbumClick = async (id: string) => {
+    try{
+      await dispatch(toggleAlbumPublish(id))
+      if (artistId) {
+        await dispatch(albumsByArtists(artistId));
+      }
+    }catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {loading ? (
@@ -54,7 +65,7 @@ const Albums = () => {
             <Grid container spacing={2}>
               {albums.map((album) => (
                 <Grid size={{ xs: 6, md: 4 }} key={album._id}>
-                  <AlbumCard album={album} deleteAlbum={deleteAlbumById} />
+                  <AlbumCard album={album} deleteAlbum={deleteAlbumById} publishAlbum={publishAlbumClick} />
                 </Grid>
               ))}
             </Grid>

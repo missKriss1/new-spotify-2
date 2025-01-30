@@ -3,8 +3,6 @@ import Track from "../models/Track";
 import  {Error} from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
-import Artist from "../models/Artist";
-import Album from "../models/Album";
 
 const tracksRouter = express.Router();
 

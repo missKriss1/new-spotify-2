@@ -9,10 +9,11 @@ import { selectUser } from '../features/users/userSlice.ts';
 
 interface Props {
   album: Album;
-  deleteAlbum: (id: string) => void
+  deleteAlbum: (id: string) => void;
+  publishAlbum: (id: string) => void;
 }
 
-const AlbumCard: React.FC<Props> = ({ album, deleteAlbum }) => {
+const AlbumCard: React.FC<Props> = ({ album, deleteAlbum, publishAlbum }) => {
   const albumImage = album.image ? `${apiUrl}/${album.image}` : zaglushka;
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
@@ -69,21 +70,38 @@ const AlbumCard: React.FC<Props> = ({ album, deleteAlbum }) => {
             {album.date ? `Year: ${album.date}` : 'Year not available'}
           </Typography>
           {user?.role === 'admin' || user?._id === album.user._id ? (
-            <Button
-              variant="contained"
-              color="error"
-              size="small"
-              sx={{
-                marginTop: 2,
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                borderRadius: '8px',
-              }}
-              onClick={(e) => {e.stopPropagation(); deleteAlbum(album._id)}}
-            >
-              Delete
-            </Button>
-           ): null}
+            <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                sx={{
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  borderRadius: '8px',
+                }}
+                onClick={(e) => { e.stopPropagation(); deleteAlbum(album._id); }}
+              >
+                Delete
+              </Button>
+
+              {user?.role === 'admin' && !album.isPublished && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    borderRadius: '8px',
+                  }}
+                  onClick={(e) => { e.stopPropagation(); publishAlbum(album._id); }}
+                >
+                  Publish
+                </Button>
+              )}
+            </Box>
+          ) : null}
         </CardContent>
 
       </Card>

@@ -51,3 +51,10 @@ export const deleteTrack= createAsyncThunk<void, string, { state: RootState }>(
   }
 )
 
+export const toggleTrackPublish = createAsyncThunk(
+  'tracks/toggleTrackPublish',
+  async (trackId: string) =>{
+    await axiosApi.patch(`/tracks/${trackId}/togglePublished`);
+  }
+)
+

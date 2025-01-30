@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectArtists, selectArtistsLoading } from '../../features/artists/artistsSlice.ts';
 import { useEffect } from 'react';
-import { deleteArtist, fetchArtists } from '../../features/artists/artistsThunk.ts';
+import { deleteArtist, fetchArtists, toggleArtistsPublish } from '../../features/artists/artistsThunk.ts';
 import ArtistCard from '../../components/ArtistCard.tsx';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -25,6 +25,15 @@ const Artists = () => {
     }
   }
 
+  const publishArtistClick = async (id: string) => {
+    try{
+      await dispatch(toggleArtistsPublish(id))
+      await dispatch(fetchArtists())
+    }catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       {loading ? (
@@ -41,7 +50,7 @@ const Artists = () => {
                 {artists.map((artist) => (
                   <Grid size={{xs: 6, md: 4}} key={artist._id}>
                       <>
-                        <ArtistCard artist={artist} deleteArtist={deleteArtistById}/>
+                        <ArtistCard artist={artist} deleteArtist={deleteArtistById} publishArtist={publishArtistClick}/>
                       </>
                   </Grid>
                 ))}

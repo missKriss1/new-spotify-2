@@ -9,10 +9,11 @@ import { selectUser } from '../features/users/userSlice.ts';
 
 interface Props {
   artist: Artists;
-  deleteArtist: (id: string) => void
+  deleteArtist: (id: string) => void;
+  publishArtist: (id: string) => void;
 }
 
-const ArtistCard: React.FC<Props> = ({ artist, deleteArtist }) => {
+const ArtistCard: React.FC<Props> = ({ artist, deleteArtist, publishArtist }) => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   let imageZaglushka = zaglushka;
@@ -40,6 +41,32 @@ const ArtistCard: React.FC<Props> = ({ artist, deleteArtist }) => {
           image={imageZaglushka}
           alt={artist.name}
         />
+        {(!artist.isPublished && (user.role === 'admin' || user._id === artist.user._id)) && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 10,
+              left: '80%',
+              transform: 'translateX(-50%)',
+              backgroundColor: 'rgba(255, 0, 0, 0.8)',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              zIndex: 1,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#fff',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+              }}
+            >
+              Unpublished
+            </Typography>
+          </Box>
+        )}
+
         <CardContent sx={{ position: 'relative', textAlign: 'center' }}>
           <Typography gutterBottom variant="h6" component="div">
             {artist.name}
@@ -54,32 +81,31 @@ const ArtistCard: React.FC<Props> = ({ artist, deleteArtist }) => {
               marginTop: '8px',
             }}
           >
-          {(!artist.isPublished && (user.role === 'admin' || user._id === artist.user._id)) && (
-              <Box
-                sx={{
-                  backgroundColor: 'rgba(255, 0, 0, 0.8)',
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                }}
-              >
-                <Typography
-                  variant="body2"
+            {user.role === 'admin' || user._id === artist.user._id ? (
+              <>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={(e) => {e.stopPropagation(); deleteArtist(artist._id)}}
                   sx={{
-                    color: '#fff',
-                    fontWeight: 'bold',
                     textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    borderRadius: '8px',
+                    marginLeft: '16px',
                   }}
                 >
-                  Unpublished
-                </Typography>
-              </Box>
-          )}
-            {user.role === 'admin' || user._id === artist.user._id ? (
+                  Delete
+                </Button>
+
+              </>
+            ) : null}
+            {user.role === 'admin' && !artist.isPublished && (
               <Button
                 variant="contained"
-                color="error"
+                color="primary"
                 size="small"
-                onClick={(e) => {e.stopPropagation(); deleteArtist(artist._id)}}
+                onClick={(e) => {e.stopPropagation(); publishArtist(artist._id)}}
                 sx={{
                   textTransform: 'uppercase',
                   fontWeight: 'bold',
@@ -87,12 +113,10 @@ const ArtistCard: React.FC<Props> = ({ artist, deleteArtist }) => {
                   marginLeft: '16px',
                 }}
               >
-                Delete
+                Publish
               </Button>
-            ) : null}
-        </Box>
-
-
+            )}
+          </Box>
         </CardContent>
       </Card>
     </div>
