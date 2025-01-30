@@ -60,6 +60,13 @@ const UserMenu: React.FC<Props> = ({user}) => {
               Track History
             </NavLink>
           </MenuItem>
+          {user && user.role === 'admin' &&
+            <MenuItem onClick={hendelClose}>
+              <NavLink to={'/endpoints'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                Admin
+              </NavLink>
+            </MenuItem>
+          }
         </div>
       </Menu>
       <button
