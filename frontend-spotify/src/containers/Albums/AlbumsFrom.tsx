@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { IAlbumMutation } from '../../types';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectUser } from '../../features/users/userSlice.ts';
-import { useNavigate } from 'react-router-dom';
-import { selectCreatingError, selectCreatingLoading } from '../../features/albums/albumsSlice.ts';
-import ButtonLoading from '../../components/UI/ButtonLoading/ButtonLoading.tsx';
-import { addAlbum } from '../../features/albums/albumsThunlk.ts';
-import FileInput from '../../components/FileInput.tsx';
-import { selectArtists } from '../../features/artists/artistsSlice.ts';
-import { fetchArtists } from '../../features/artists/artistsThunk.ts';
+import React, { useEffect, useState } from "react";
+import { IAlbumMutation } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { selectUser } from "../../features/users/userSlice.ts";
+import { useNavigate } from "react-router-dom";
+import {
+  selectCreatingError,
+  selectCreatingLoading,
+} from "../../features/albums/albumsSlice.ts";
+import ButtonLoading from "../../components/UI/ButtonLoading/ButtonLoading.tsx";
+import { addAlbum } from "../../features/albums/albumsThunlk.ts";
+import FileInput from "../../components/FileInput.tsx";
+import { selectArtists } from "../../features/artists/artistsSlice.ts";
+import { fetchArtists } from "../../features/artists/artistsThunk.ts";
 
 const initialState = {
-  title: '',
+  title: "",
   image: null,
   date: 1930,
-  artist: '',
+  artist: "",
 };
 
 const AlbumsFrom = () => {
@@ -24,7 +27,7 @@ const AlbumsFrom = () => {
   const artists = useAppSelector(selectArtists);
   const navigate = useNavigate();
   const isCreating = useAppSelector(selectCreatingLoading);
-  const creatingError  = useAppSelector(selectCreatingError);
+  const creatingError = useAppSelector(selectCreatingError);
 
   useEffect(() => {
     dispatch(fetchArtists());
@@ -34,21 +37,22 @@ const AlbumsFrom = () => {
     if (!user) navigate("/register");
   }, [navigate, user]);
 
-  const onFormSubmit = async (e: React.FormEvent) =>{
-    e.preventDefault()
+  const onFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    try{
+    try {
       await dispatch(addAlbum(form)).unwrap();
-      setForm({...initialState});
-      navigate(`/albums?artist=${form.artist}`)
-
-    }catch (e){
+      setForm({ ...initialState });
+      navigate(`/albums?artist=${form.artist}`);
+    } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const onInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setForm((prevState: IAlbumMutation) => ({ ...prevState, [name]: value }));
@@ -67,7 +71,6 @@ const AlbumsFrom = () => {
     }
   };
 
-
   const getFieldError = (fieldName: string) => {
     try {
       return creatingError?.errors[fieldName].message;
@@ -79,7 +82,7 @@ const AlbumsFrom = () => {
   return (
     <div>
       <div
-        style={{maxWidth: "500px"}}
+        style={{ maxWidth: "500px" }}
         className="container mt-5 bg-white p-4 shadow rounded"
       >
         <h3 className="text-center mb-5 mt-2">New album</h3>
@@ -93,10 +96,10 @@ const AlbumsFrom = () => {
               id="title"
               value={form.title}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('title') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("title") ? "is-invalid" : ""}`}
             />
-            {getFieldError('title') && (
-              <div className="invalid-feedback">{getFieldError('title')}</div>
+            {getFieldError("title") && (
+              <div className="invalid-feedback">{getFieldError("title")}</div>
             )}
           </div>
 
@@ -109,12 +112,10 @@ const AlbumsFrom = () => {
               min={1930}
               value={form.date}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('date') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("date") ? "is-invalid" : ""}`}
             />
-            {getFieldError('date') && (
-              <div className="invalid-feedback">
-                {getFieldError('date')}
-              </div>
+            {getFieldError("date") && (
+              <div className="invalid-feedback">{getFieldError("date")}</div>
             )}
           </div>
 
@@ -125,7 +126,7 @@ const AlbumsFrom = () => {
               id="artist"
               value={form.artist}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('artist') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("artist") ? "is-invalid" : ""}`}
             >
               <option value="">Select an artist</option>
               {artists.map((artist) => (
@@ -134,11 +135,10 @@ const AlbumsFrom = () => {
                 </option>
               ))}
             </select>
-            {getFieldError('artist') && (
-              <div className="invalid-feedback">{getFieldError('artist')}</div>
+            {getFieldError("artist") && (
+              <div className="invalid-feedback">{getFieldError("artist")}</div>
             )}
           </div>
-
 
           <div className="mb-3">
             <label htmlFor="date">Photo</label>
@@ -148,11 +148,11 @@ const AlbumsFrom = () => {
               label="Photo"
               onGetFile={onFileChange}
               file={form.image}
-              className={`form-control ${getFieldError('image') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("image") ? "is-invalid" : ""}`}
             />
 
-            {getFieldError('image') && (
-              <div className="invalid-feedback">{getFieldError('image')}</div>
+            {getFieldError("image") && (
+              <div className="invalid-feedback">{getFieldError("image")}</div>
             )}
           </div>
 

@@ -38,7 +38,7 @@ const FileInput: React.FC<Props> = ({
 
   useEffect(() => {
     if (!file) setFileName("");
-  });
+  }, [file]);
 
   return (
     <>
@@ -61,9 +61,10 @@ const FileInput: React.FC<Props> = ({
         />
         <button
           type="button"
-          className="btn btn-primary fs-5 d-inline-flex justify-content-center"
+          className="btn btn-primary btn-sm fs-6 d-inline-flex justify-content-center"
           onClick={activateInput}
         >
+          Add photo
           <i className="bi bi-file-earmark"></i>
         </button>
       </div>

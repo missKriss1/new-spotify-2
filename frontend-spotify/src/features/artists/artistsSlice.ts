@@ -1,11 +1,16 @@
-import { Artists, ValidationError } from '../../types';
-import { createSlice } from '@reduxjs/toolkit';
-import { addArtist, fetchArtists, getArtistById, toggleArtistsPublish } from './artistsThunk.ts';
-import { RootState } from '../../app/store.ts';
+import { Artists, ValidationError } from "../../types";
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  addArtist,
+  fetchArtists,
+  getArtistById,
+  toggleArtistsPublish,
+} from "./artistsThunk.ts";
+import { RootState } from "../../app/store.ts";
 
 interface ArtistsState {
   artists: Artists[];
-  artist: Artists |null;
+  artist: Artists | null;
   fetchingLoading: boolean;
   fetchError: boolean;
   isCreating: boolean;
@@ -21,40 +26,44 @@ const initialState: ArtistsState = {
   isCreating: false,
   creatingError: null,
   unPublishedArtists: [],
-}
+};
 
-export const selectArtists = (state: RootState) => state.artists.artists
-export const selectOneArtist = (state: RootState) => state.artists.artist
-export const selectArtistsLoading = (state: RootState) => state.artists.fetchingLoading
-export const selectCreatingError = (state: RootState) => state.artists.creatingError
-export const selectCreatingLoading = (state: RootState) => state.artists.isCreating
-export const selectUnPublishedArtists = (state: RootState) => state.artists.unPublishedArtists
+export const selectArtists = (state: RootState) => state.artists.artists;
+export const selectOneArtist = (state: RootState) => state.artists.artist;
+export const selectArtistsLoading = (state: RootState) =>
+  state.artists.fetchingLoading;
+export const selectCreatingError = (state: RootState) =>
+  state.artists.creatingError;
+export const selectCreatingLoading = (state: RootState) =>
+  state.artists.isCreating;
+export const selectUnPublishedArtists = (state: RootState) =>
+  state.artists.unPublishedArtists;
 
 export const artistsSlice = createSlice({
   name: "artists",
   initialState,
-  reducers:{},
-  extraReducers: (builder) =>{
+  reducers: {},
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchArtists.pending, (state) =>{
-         state.fetchingLoading = true
+      .addCase(fetchArtists.pending, (state) => {
+        state.fetchingLoading = true;
       })
-      .addCase(fetchArtists.fulfilled, (state, {payload: artists}) =>{
+      .addCase(fetchArtists.fulfilled, (state, { payload: artists }) => {
         state.fetchingLoading = false;
         state.artists = artists;
       })
-      .addCase(fetchArtists.rejected, (state) =>{
-        state.fetchError = true
+      .addCase(fetchArtists.rejected, (state) => {
+        state.fetchError = true;
       })
-      .addCase(getArtistById.pending, (state) =>{
-        state.fetchingLoading = true
+      .addCase(getArtistById.pending, (state) => {
+        state.fetchingLoading = true;
       })
-      .addCase(getArtistById.fulfilled, (state, {payload: artist}) =>{
+      .addCase(getArtistById.fulfilled, (state, { payload: artist }) => {
         state.fetchingLoading = false;
         state.artist = artist;
       })
-      .addCase(getArtistById.rejected, (state) =>{
-        state.fetchError = true
+      .addCase(getArtistById.rejected, (state) => {
+        state.fetchError = true;
       })
       .addCase(addArtist.pending, (state) => {
         state.isCreating = true;
@@ -74,9 +83,9 @@ export const artistsSlice = createSlice({
         state.fetchingLoading = false;
       })
       .addCase(toggleArtistsPublish.rejected, (state) => {
-        state.fetchError = true
+        state.fetchError = true;
       });
-  }
-})
+  },
+});
 
 export const artistsReducer = artistsSlice.reducer;

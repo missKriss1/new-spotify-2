@@ -1,79 +1,85 @@
-
-import { useState } from 'react';
-import { RegisterMutation } from '../../types';
-import { Alert, Avatar, Box, Button, Container } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid2';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import Typography from '@mui/material/Typography';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectLoginError } from './userSlice.ts';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { googleLogin, login } from './userThunk.ts';
-import { GoogleLogin } from '@react-oauth/google';
+import { useState } from "react";
+import { RegisterMutation } from "../../types";
+import { Alert, Avatar, Box, Button, Container } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid2";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import Typography from "@mui/material/Typography";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { selectLoginError } from "./userSlice.ts";
+import { NavLink, useNavigate } from "react-router-dom";
+import { googleLogin, login } from "./userThunk.ts";
+import { GoogleLogin } from "@react-oauth/google";
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
   const loginError = useAppSelector(selectLoginError);
   const navigate = useNavigate();
 
-
   const [form, setForm] = useState<RegisterMutation>({
-    username: '',
-    password: '',
-  })
+    username: "",
+    password: "",
+    avatar: null,
+    displayName: '',
+  });
 
   const inpytChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    setForm(prevState => ({...prevState, [name]: value}));
-  }
+    const { name, value } = e.target;
+    setForm((prevState) => ({ ...prevState, [name]: value }));
+  };
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-      await dispatch(login(form)).unwrap()
-      navigate('/');
-  }
+    await dispatch(login(form)).unwrap();
+    navigate("/");
+  };
 
-  const googleLoginUser = async (credential: string) =>{
+  const googleLoginUser = async (credential: string) => {
     await dispatch(googleLogin(credential)).unwrap();
-    navigate('/');
-  }
+    navigate("/");
+  };
   return (
     <div>
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOpenIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
           {loginError && (
-            <Alert severity='error' sx={{mt:3 , width: '100%'}}>
+            <Alert severity="error" sx={{ mt: 3, width: "100%" }}>
               {loginError.error}
             </Alert>
           )}
 
-          <Box sx ={{pt:2}}>
-            <GoogleLogin onSuccess={(credentialResponse => {
-              if(credentialResponse.credential){
-                void googleLoginUser(credentialResponse.credential)
-              }
-            })} onError={() => alert('Login failed')}>
-
-            </GoogleLogin>
+          <Box sx={{ pt: 2 }}>
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                if (credentialResponse.credential) {
+                  void googleLoginUser(credentialResponse.credential);
+                }
+              }}
+              onError={() => alert("Login failed")}
+            ></GoogleLogin>
           </Box>
 
-          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
-            <Grid container direction={'column'} spacing={2}>
-              <Grid  size ={12}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={submitHandler}
+            sx={{ mt: 3 }}
+          >
+            <Grid container direction={"column"} spacing={2}>
+              <Grid size={12}>
                 <TextField
                   fullWidth
                   id="username"
@@ -83,7 +89,7 @@ const LoginUser = () => {
                   onChange={inpytChangeHandler}
                 />
               </Grid>
-              <Grid  size ={12}>
+              <Grid size={12}>
                 <TextField
                   fullWidth
                   name="password"
@@ -105,10 +111,7 @@ const LoginUser = () => {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid>
-                <NavLink to='/register'>
-                  No account yet? Sign Up
-                </NavLink>
-
+                <NavLink to="/register">No account yet? Sign Up</NavLink>
               </Grid>
             </Grid>
           </Box>

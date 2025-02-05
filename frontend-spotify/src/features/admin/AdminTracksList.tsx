@@ -1,54 +1,54 @@
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectTracksAdmin, selectTracksLoading } from './tracksAdminSlice.ts';
-import { useEffect } from 'react';
-import { fetchAdminTracks } from './tracksAdminThunk.ts';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Track } from '../../types';
-import Spinner from '../../components/UI/Spinner/Spinner.tsx';
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { selectTracksAdmin, selectTracksLoading } from "./tracksAdminSlice.ts";
+import { useEffect } from "react";
+import { fetchAdminTracks } from "./tracksAdminThunk.ts";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Track } from "../../types";
+import Spinner from "../../components/UI/Spinner/Spinner.tsx";
 
 const AdminTracksList = () => {
   const dispatch = useAppDispatch();
   const track = useAppSelector(selectTracksAdmin);
-  const loadTrack = useAppSelector(selectTracksLoading)
+  const loadTrack = useAppSelector(selectTracksLoading);
 
   useEffect(() => {
     dispatch(fetchAdminTracks());
   }, [dispatch]);
 
   const columns: GridColDef<Track>[] = [
-    { field: '_id', headerName: 'ID', width: 150 },
+    { field: "_id", headerName: "ID", width: 150 },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       width: 200,
       editable: false,
     },
     {
-      field: 'continuance',
-      headerName: 'Continuance',
+      field: "continuance",
+      headerName: "Continuance",
       width: 150,
       editable: false,
     },
     {
-      field: 'isPublished',
-      headerName: 'Published',
+      field: "isPublished",
+      headerName: "Published",
       width: 120,
-      type: 'boolean',
+      type: "boolean",
       editable: false,
     },
     {
-      field: 'number',
-      headerName: 'Number',
+      field: "number",
+      headerName: "Number",
       width: 120,
-      type: 'number',
+      type: "number",
       editable: false,
     },
   ];
   return (
     <>
-      {loadTrack ?(
-        <Spinner/>
-      ): (
+      {loadTrack ? (
+        <Spinner />
+      ) : (
         <div>
           <DataGrid
             getRowId={(row) => row._id}

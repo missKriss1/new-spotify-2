@@ -1,9 +1,9 @@
-import Artists from './Atists/Artists.tsx';
+import Artists from "./Atists/Artists.tsx";
 
 const Home = () => {
   return (
     <div>
-      <Artists/>
+      <Artists />
     </div>
   );
 };

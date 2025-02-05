@@ -1,12 +1,15 @@
-import { IArtistMutation } from '../../types';
-import React, { useEffect, useState } from 'react';
-import { selectUser } from '../../features/users/userSlice.ts';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { useNavigate } from 'react-router-dom';
-import { addArtist } from '../../features/artists/artistsThunk.ts';
-import { selectCreatingError, selectCreatingLoading } from '../../features/artists/artistsSlice.ts';
-import FileInput from '../../components/FileInput.tsx';
-import ButtonLoading from '../../components/UI/ButtonLoading/ButtonLoading.tsx';
+import { IArtistMutation } from "../../types";
+import React, { useEffect, useState } from "react";
+import { selectUser } from "../../features/users/userSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { useNavigate } from "react-router-dom";
+import { addArtist } from "../../features/artists/artistsThunk.ts";
+import {
+  selectCreatingError,
+  selectCreatingLoading,
+} from "../../features/artists/artistsSlice.ts";
+import FileInput from "../../components/FileInput.tsx";
+import ButtonLoading from "../../components/UI/ButtonLoading/ButtonLoading.tsx";
 
 const initialState = {
   name: "",
@@ -18,7 +21,7 @@ const ArtistsForm = () => {
   const [form, setForm] = useState<IArtistMutation>({ ...initialState });
   const dispatch = useAppDispatch();
   const creatingError = useAppSelector(selectCreatingError);
-  const isCreating = useAppSelector(selectCreatingLoading)
+  const isCreating = useAppSelector(selectCreatingLoading);
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
 
@@ -26,18 +29,17 @@ const ArtistsForm = () => {
     if (!user) navigate("/register");
   }, [navigate, user]);
 
-  const onFormSubmit = async (e: React.FormEvent) =>{
-    e.preventDefault()
+  const onFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    try{
+    try {
       await dispatch(addArtist(form)).unwrap();
-      setForm({...initialState});
-      navigate('/')
-
-    }catch (e){
+      setForm({ ...initialState });
+      navigate("/");
+    } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -69,7 +71,7 @@ const ArtistsForm = () => {
   return (
     <div>
       <div
-        style={{maxWidth: "500px"}}
+        style={{ maxWidth: "500px" }}
         className="container mt-5 bg-white p-4 shadow rounded"
       >
         <h3 className="text-center mb-5 mt-2">New artist</h3>
@@ -83,10 +85,10 @@ const ArtistsForm = () => {
               id="name"
               value={form.name}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('name') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("name") ? "is-invalid" : ""}`}
             />
-            {getFieldError('name') && (
-              <div className="invalid-feedback">{getFieldError('name')}</div>
+            {getFieldError("name") && (
+              <div className="invalid-feedback">{getFieldError("name")}</div>
             )}
           </div>
 
@@ -97,11 +99,11 @@ const ArtistsForm = () => {
               id="information"
               value={form.information}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('information') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("information") ? "is-invalid" : ""}`}
             />
-            {getFieldError('information') && (
+            {getFieldError("information") && (
               <div className="invalid-feedback">
-                {getFieldError('information')}
+                {getFieldError("information")}
               </div>
             )}
           </div>
@@ -114,10 +116,10 @@ const ArtistsForm = () => {
               label="Photo"
               onGetFile={onFileChange}
               file={form.image}
-              className={`form-control ${getFieldError('image') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("image") ? "is-invalid" : ""}`}
             />
-            {getFieldError('image') && (
-              <div className="invalid-feedback">{getFieldError('image')}</div>
+            {getFieldError("image") && (
+              <div className="invalid-feedback">{getFieldError("image")}</div>
             )}
           </div>
 

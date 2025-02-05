@@ -1,16 +1,16 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axiosApi from '../../axiosApi.ts';
-import { ITrackMutation, Track, ValidationError } from '../../types';
-import { RootState } from '../../app/store.ts';
-import { isAxiosError } from 'axios';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axiosApi from "../../axiosApi.ts";
+import { ITrackMutation, Track, ValidationError } from "../../types";
+import { RootState } from "../../app/store.ts";
+import { isAxiosError } from "axios";
 
 export const fetchAllTrackByAlbum = createAsyncThunk(
-  'track/fetchAllTrackByAlbum',
-  async (id: string) =>{
+  "track/fetchAllTrackByAlbum",
+  async (id: string) => {
     const artistsResponse = await axiosApi(`tracks?album=${id}`);
     return artistsResponse.data || [];
-  }
-)
+  },
+);
 
 export const addTracks = createAsyncThunk<
   Track,
@@ -37,24 +37,23 @@ export const addTracks = createAsyncThunk<
       }
       throw error;
     }
-  }
+  },
 );
 
-export const deleteTrack= createAsyncThunk<void, string, { state: RootState }>(
-  'tracks/deleteTrack',
-  async (id: string, {getState}) =>{
+export const deleteTrack = createAsyncThunk<void, string, { state: RootState }>(
+  "tracks/deleteTrack",
+  async (id: string, { getState }) => {
     const token = getState().users.user?.token;
 
     await axiosApi.delete(`/tracks/${id}`, {
       headers: { Authorization: token },
     });
-  }
-)
+  },
+);
 
 export const toggleTrackPublish = createAsyncThunk(
-  'tracks/toggleTrackPublish',
-  async (trackId: string) =>{
+  "tracks/toggleTrackPublish",
+  async (trackId: string) => {
     await axiosApi.patch(`/tracks/${trackId}/togglePublished`);
-  }
-)
-
+  },
+);

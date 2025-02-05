@@ -7,7 +7,7 @@ const config = {
     publicPath: path.join(rootPath, 'public'),
     google:{
         clientId:process.env.GOOGLE_CLIENT_ID,
-        secretId: process.env.GOOGLE_CLIENT_SECRET
+        secretId: process.env.GOOGLE_CLIENT_SECRET,
     },
     db:'mongodb://localhost/spotify'
 }

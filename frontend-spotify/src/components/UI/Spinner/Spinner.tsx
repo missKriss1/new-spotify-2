@@ -1,5 +1,3 @@
-
-
 const Spinner = () => {
   return (
     <div>

@@ -1,23 +1,23 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Artists, IArtistMutation, ValidationError } from '../../types';
-import axiosApi from '../../axiosApi.ts';
-import { RootState } from '../../app/store.ts';
-import { isAxiosError } from 'axios';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { Artists, IArtistMutation, ValidationError } from "../../types";
+import axiosApi from "../../axiosApi.ts";
+import { RootState } from "../../app/store.ts";
+import { isAxiosError } from "axios";
 
 export const fetchArtists = createAsyncThunk<Artists[], void>(
-  'artists/fetchArtists',
-  async () =>{
-    const artistsResponse = await axiosApi<Artists[]>('/artists');
+  "artists/fetchArtists",
+  async () => {
+    const artistsResponse = await axiosApi<Artists[]>("/artists");
     return artistsResponse.data || [];
-  }
-)
+  },
+);
 export const getArtistById = createAsyncThunk(
-  'artists/getArtistById',
-  async (id: string) =>{
-    const {data: artist} = await axiosApi.get(`/artists/${id}`);
+  "artists/getArtistById",
+  async (id: string) => {
+    const { data: artist } = await axiosApi.get(`/artists/${id}`);
     return artist || [];
-  }
-)
+  },
+);
 
 export const addArtist = createAsyncThunk<
   Artists,
@@ -55,25 +55,24 @@ export const addArtist = createAsyncThunk<
       }
       throw error;
     }
-  }
+  },
 );
 
-export const deleteArtist = createAsyncThunk<void, string, { state: RootState }>(
-  'artists/deleteArtist',
-  async (id: string, {getState}) =>{
-    const token = getState().users.user?.token;
+export const deleteArtist = createAsyncThunk<
+  void,
+  string,
+  { state: RootState }
+>("artists/deleteArtist", async (id: string, { getState }) => {
+  const token = getState().users.user?.token;
 
-    await axiosApi.delete(`/artists/${id}`, {
-      headers: { Authorization: token },
-    });
-  }
-)
+  await axiosApi.delete(`/artists/${id}`, {
+    headers: { Authorization: token },
+  });
+});
 
 export const toggleArtistsPublish = createAsyncThunk(
-  'artists/toggleArtists',
-  async (artistId: string) =>{
+  "artists/toggleArtists",
+  async (artistId: string) => {
     await axiosApi.patch(`/artists/${artistId}/togglePublished`);
-  }
-)
-
-
+  },
+);

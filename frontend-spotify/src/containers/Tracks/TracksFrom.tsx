@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { ITrackMutation } from '../../types';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { fetchArtists } from '../../features/artists/artistsThunk.ts';
-import {  albumsByArtists } from '../../features/albums/albumsThunlk.ts';
-import { useNavigate } from 'react-router-dom';
-import { selectUser } from '../../features/users/userSlice.ts';
-import { addTracks } from '../../features/tracks/tracksThunk.ts';
-import { selectCreatingError, selectCreatingLoading } from '../../features/tracks/tracksSlice.ts';
-import ButtonLoading from '../../components/UI/ButtonLoading/ButtonLoading.tsx';
-import { selectArtists } from '../../features/artists/artistsSlice.ts';
-import { selectAlbum } from '../../features/albums/albumsSlice.ts';
-
+import React, { useEffect, useState } from "react";
+import { ITrackMutation } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { fetchArtists } from "../../features/artists/artistsThunk.ts";
+import { albumsByArtists } from "../../features/albums/albumsThunlk.ts";
+import { useNavigate } from "react-router-dom";
+import { selectUser } from "../../features/users/userSlice.ts";
+import { addTracks } from "../../features/tracks/tracksThunk.ts";
+import {
+  selectCreatingError,
+  selectCreatingLoading,
+} from "../../features/tracks/tracksSlice.ts";
+import ButtonLoading from "../../components/UI/ButtonLoading/ButtonLoading.tsx";
+import { selectArtists } from "../../features/artists/artistsSlice.ts";
+import { selectAlbum } from "../../features/albums/albumsSlice.ts";
 
 const initialState = {
-  title: '',
-  album: '',
-  artist: '',
-  continuance: '',
-  number: 1
+  title: "",
+  album: "",
+  artist: "",
+  continuance: "",
+  number: 1,
 };
 
 const TracksFrom = () => {
@@ -26,38 +28,38 @@ const TracksFrom = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const isCreating = useAppSelector(selectCreatingLoading);
-  const creatingError  = useAppSelector(selectCreatingError);
+  const creatingError = useAppSelector(selectCreatingError);
   const artists = useAppSelector(selectArtists);
-  const albums = useAppSelector(selectAlbum)
+  const albums = useAppSelector(selectAlbum);
 
   useEffect(() => {
     dispatch(fetchArtists());
 
-    if(form.artist !== ''){
+    if (form.artist !== "") {
       dispatch(albumsByArtists(form.artist));
     }
-
   }, [dispatch, form.artist]);
 
   useEffect(() => {
     if (!user) navigate("/register");
   }, [navigate, user]);
 
-  const onFormSubmit = async (e: React.FormEvent) =>{
-    e.preventDefault()
+  const onFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    try{
+    try {
       await dispatch(addTracks(form)).unwrap();
-      setForm({...initialState});
-      navigate(`/tracks?album=${form.album}`)
-
-    }catch (e){
+      setForm({ ...initialState });
+      navigate(`/tracks?album=${form.album}`);
+    } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const onInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setForm((prevState: ITrackMutation) => ({ ...prevState, [name]: value }));
@@ -74,7 +76,7 @@ const TracksFrom = () => {
   return (
     <div>
       <div
-        style={{maxWidth: "500px"}}
+        style={{ maxWidth: "500px" }}
         className="container mt-5 bg-white p-4 shadow rounded"
       >
         <h3 className="text-center mb-5 mt-2">New track</h3>
@@ -88,10 +90,10 @@ const TracksFrom = () => {
               id="title"
               value={form.title}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('title') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("title") ? "is-invalid" : ""}`}
             />
-            {getFieldError('title') && (
-              <div className="invalid-feedback">{getFieldError('title')}</div>
+            {getFieldError("title") && (
+              <div className="invalid-feedback">{getFieldError("title")}</div>
             )}
           </div>
 
@@ -102,11 +104,11 @@ const TracksFrom = () => {
               id="continuance"
               value={form.continuance}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('continuance') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("continuance") ? "is-invalid" : ""}`}
             />
-            {getFieldError('continuance') && (
+            {getFieldError("continuance") && (
               <div className="invalid-feedback">
-                {getFieldError('continuance')}
+                {getFieldError("continuance")}
               </div>
             )}
           </div>
@@ -118,7 +120,7 @@ const TracksFrom = () => {
               id="artist"
               value={form.artist}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('artist') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("artist") ? "is-invalid" : ""}`}
             >
               <option value="">Select an artist</option>
               {artists.map((artist) => (
@@ -127,8 +129,8 @@ const TracksFrom = () => {
                 </option>
               ))}
             </select>
-            {getFieldError('artist') && (
-              <div className="invalid-feedback">{getFieldError('artist')}</div>
+            {getFieldError("artist") && (
+              <div className="invalid-feedback">{getFieldError("artist")}</div>
             )}
           </div>
 
@@ -139,7 +141,7 @@ const TracksFrom = () => {
               id="album"
               value={form.album}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('album') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("album") ? "is-invalid" : ""}`}
             >
               <option value="">Select an album</option>
               {albums.map((album) => (
@@ -148,8 +150,8 @@ const TracksFrom = () => {
                 </option>
               ))}
             </select>
-            {getFieldError('album') && (
-              <div className="invalid-feedback">{getFieldError('album')}</div>
+            {getFieldError("album") && (
+              <div className="invalid-feedback">{getFieldError("album")}</div>
             )}
           </div>
 
@@ -161,13 +163,11 @@ const TracksFrom = () => {
               min={1}
               value={form.number}
               onChange={onInputChange}
-              className={`form-control ${getFieldError('number') ? 'is-invalid' : ''}`}
+              className={`form-control ${getFieldError("number") ? "is-invalid" : ""}`}
             />
             <label htmlFor="number">Number</label>
-            {getFieldError('number') && (
-              <div className="invalid-feedback">
-                {getFieldError('number')}
-              </div>
+            {getFieldError("number") && (
+              <div className="invalid-feedback">{getFieldError("number")}</div>
             )}
           </div>
 

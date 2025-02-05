@@ -1,12 +1,11 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 
-interface Props  extends  React.PropsWithChildren{
+interface Props extends React.PropsWithChildren {
   isAllowed: boolean | null;
 }
-const ProtectedRoute: React.FC<Props> = ({isAllowed, children}) => {
-
-  if(!isAllowed){
-    return <Navigate to='/login'/>
+const ProtectedRoute: React.FC<Props> = ({ isAllowed, children }) => {
+  if (!isAllowed) {
+    return <Navigate to="/login" />;
   }
 
   return children as React.ReactElement;
