@@ -60,6 +60,7 @@ userRouter.post('/google', async (req, res, next) => {
 })
 
 userRouter.post("/register", imagesUpload.single('image'), async (req, res, next) => {
+
     try{
         const user = new User({
             username: req.body.username,

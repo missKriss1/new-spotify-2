@@ -19,17 +19,30 @@ export const googleLogin = createAsyncThunk<User, string, {rejectValue: GlobalEr
   }
 )
 
-export const register = createAsyncThunk<RegisterResponse, RegisterMutation, {rejectValue: ValidationError}>(
+export const register = createAsyncThunk<
+  RegisterResponse,
+  RegisterMutation,
+  {rejectValue: ValidationError}>(
   'users/register',
-  async (registerMutation : RegisterMutation, {rejectWithValue}) =>{
+  async (registerMutation, {rejectWithValue}) =>{
     try{
-      const response = await axiosApi.post<RegisterResponse>('/users/register', registerMutation);
-      return response.data;
+      const formData = new FormData();
+
+      const keys = Object.keys(registerMutation) as (keyof RegisterMutation)[];
+      keys.forEach((key) => {
+        const value = registerMutation[key];
+        if (value !== null) {
+          formData.append(key, value);
+        }
+      });
+
+      const {data: user} = await axiosApi.post<RegisterResponse>('/users/register', formData);
+      return user
     }catch(error){
       if (isAxiosError(error) && error.response) {
         const { data } = error.response;
         if (error.response.status === 400 && data.errors) {
-          return rejectWithValue(data as ValidationError);
+          return  rejectWithValue(data as ValidationError);
         }
       }
       throw error;
