@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectLoginError } from './userSlice.ts';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { login } from './userThunk.ts';
+import { googleLogin, login } from './userThunk.ts';
 import { GoogleLogin } from '@react-oauth/google';
 
 const LoginUser = () => {
@@ -32,6 +32,11 @@ const LoginUser = () => {
     e.preventDefault();
       await dispatch(login(form)).unwrap()
       navigate('/');
+  }
+
+  const googleLoginUser = async (credential: string) =>{
+    await dispatch(googleLogin(credential)).unwrap();
+    navigate('/');
   }
   return (
     <div>
@@ -58,7 +63,9 @@ const LoginUser = () => {
 
           <Box sx ={{pt:2}}>
             <GoogleLogin onSuccess={(credentialResponse => {
-              console.log(credentialResponse);
+              if(credentialResponse.credential){
+                void googleLoginUser(credentialResponse.credential)
+              }
             })} onError={() => alert('Login failed')}>
 
             </GoogleLogin>

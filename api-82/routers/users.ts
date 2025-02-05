@@ -10,7 +10,7 @@ const userRouter = express.Router();
 
 const client = new OAuth2Client(config.google.clientId);
 
-userRouter.post('/google', auth, async (req, res, next) => {
+userRouter.post('/google', async (req, res, next) => {
     try{
 
         const ticket = await  client.verifyIdToken({
