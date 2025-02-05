@@ -3,4 +3,7 @@ export interface UsersFiled{
     password: string;
     role: string;
     token: string;
+    displayName: string;
+    googleId: string;
+    avatar: File | null;
 }
