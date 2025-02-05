@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectLoginError } from './userSlice.ts';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { login } from './userThunk.ts';
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -54,6 +55,15 @@ const LoginUser = () => {
               {loginError.error}
             </Alert>
           )}
+
+          <Box sx ={{pt:2}}>
+            <GoogleLogin onSuccess={(credentialResponse => {
+              console.log(credentialResponse);
+            })} onError={() => alert('Login failed')}>
+
+            </GoogleLogin>
+          </Box>
+
           <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
             <Grid container direction={'column'} spacing={2}>
               <Grid  size ={12}>
